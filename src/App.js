@@ -87,8 +87,25 @@ class BooksApp extends React.Component {
   }
 
   updateBookStatus = (setBookShelf) => {
-    console.log('setBookShelf status:', setBookShelf.status);
-    console.log('setBookShelf book id:', setBookShelf.id);
+    // remove old state if value exists
+    this.setState((prevState) => ({
+         myreads: {
+            currentlyReading: prevState.myreads.currentlyReading.filter((bookId) => {
+              return bookId !== setBookShelf.id
+            }),
+            wantToRead: prevState.myreads.wantToRead.filter((bookId) => {
+              return bookId !== setBookShelf.id
+            }),
+            read: prevState.myreads.read.filter((bookId) => {
+              return bookId !== setBookShelf.id
+            })
+         }
+    }));
+    // add new state if value exists
+    this.setState((prevState) => (
+         (setBookShelf.status == 'currentlyReading' || setBookShelf.status == 'wantToRead' || setBookShelf.status == 'read') &&
+          prevState.myreads[setBookShelf.status].push(setBookShelf.id)
+    ));
   }
 
   render() {
