@@ -6,22 +6,15 @@ import * as BooksAPI from './BooksAPI'
 
 class SearchBooks extends Component {
 
-    state = {
-        books: []
-    }
-
-    componentDidMount() {
-        BooksAPI.getAll()
-        .then((books) => {
-            this.setState(() => ({
-            books
-            }))
-        })
+    handleBookUpdate = (setBook) => {
+      if (this.props.onBookUpdate) {
+        this.props.onBookUpdate(setBook)
+      }
     }
 
     render() {
         // const { query, books } = this.state
-        const { books } = this.state
+        const { library } = this.props
 
         return (
             <div className="search-books">
@@ -44,9 +37,11 @@ class SearchBooks extends Component {
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {books.map((book) => (
+                        {library.map((book) => (
                         <li key={book.id}>
-                            <Book book={book} />
+                            <Book 
+                                book={book} 
+                                onChange={(setBook) => this.handleBookUpdate(setBook)} />
                         </li>
                         ))}
                     </ol>

@@ -16,19 +16,13 @@ class ListBooks extends Component {
       return books
     }
 
-    handleBookUpdate = (setBookShelf) => {
+    handleBookUpdate = (setBook) => {
       if (this.props.onBookUpdate) {
-        this.props.onBookUpdate(setBookShelf)
+        this.props.onBookUpdate(setBook)
       }
     }
 
     render() {
-
-        const { myreads } = this.props
-        const currentlyReading = this.getBooks(myreads.currentlyReading);
-        const wantToRead = this.getBooks(myreads.wantToRead);
-        const read = this.getBooks(myreads.read);
-
         return (
         <div className="list-books">
           <div className="list-books-title">
@@ -40,14 +34,19 @@ class ListBooks extends Component {
                 <h2 className="bookshelf-title">Currently Reading</h2>
                 <div className="bookshelf-books">
                   <ol className="books-grid">
-                      {currentlyReading.map((book) => (
-                          <li key={book[0].id}>
-                            <Book 
-                              book={book[0]} 
-                              status={`currentlyReading`} 
-                              onChange={(setBookShelf) => this.handleBookUpdate(setBookShelf)} />
-                          </li>
-                      ))}
+                      {this.props.library.map(
+                        (book) => {
+                          if (book.shelf === 'currentlyReading') {
+                            return (<li key={book.id}>
+                              <Book 
+                                book={book} 
+                                onChange={(setBook) => this.handleBookUpdate(setBook)} />
+                            </li>)
+                          } else {
+                            return ''
+                          }
+                        }
+                     )}
                   </ol>
                 </div>
               </div>
@@ -55,14 +54,19 @@ class ListBooks extends Component {
                 <h2 className="bookshelf-title">Want to Read</h2>
                 <div className="bookshelf-books">
                   <ol className="books-grid">
-                    {wantToRead.map((book) => (
-                        <li key={book[0].id}>
-                          <Book 
-                              book={book[0]} 
-                              status={`wantToRead`} 
-                              onChange={(setBookShelf) => this.handleBookUpdate(setBookShelf)} />
-                        </li>
-                    ))}
+                    {this.props.library.map(
+                        (book) => {
+                          if (book.shelf === 'wantToRead') {
+                            return (<li key={book.id}>
+                              <Book 
+                                book={book} 
+                                onChange={(setBook) => this.handleBookUpdate(setBook)} />
+                            </li>)
+                          } else {
+                            return ''
+                          }
+                        }
+                     )}
                   </ol>
                 </div>
               </div>
@@ -70,14 +74,19 @@ class ListBooks extends Component {
                 <h2 className="bookshelf-title">Read</h2>
                 <div className="bookshelf-books">
                   <ol className="books-grid">
-                    {read.map((book) => (
-                        <li key={book[0].id}>
-                          <Book 
-                              book={book[0]} 
-                              status={`read`} 
-                              onChange={(setBookShelf) => this.handleBookUpdate(setBookShelf)} />
-                        </li>
-                    ))}
+                    {this.props.library.map(
+                        (book) => {
+                          if (book.shelf === 'read') {
+                            return (<li key={book.id}>
+                              <Book 
+                                book={book} 
+                                onChange={(setBook) => this.handleBookUpdate(setBook)} />
+                            </li>)
+                          } else {
+                            return ''
+                          }
+                        }
+                     )}
                   </ol>
                 </div>
               </div>

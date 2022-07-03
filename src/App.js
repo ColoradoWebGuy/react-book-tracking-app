@@ -2,16 +2,12 @@ import React from 'react'
 import './App.css'
 import ListBooks from './ListBooks'
 import SearchBooks from './SearchBooks'
+import * as BooksAPI from './BooksAPI'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
 class BooksApp extends React.Component {
 
   state = {
-    myreads: {
-      currentlyReading: [1,2],
-      wantToRead: [3,4],
-      read: [5,6,7]
-    },
     library: [
         {
             id:1,
@@ -21,7 +17,8 @@ class BooksApp extends React.Component {
             ],
             imageLinks: {
                 thumbnail: "http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api"
-            }
+            },
+            shelf: "currentlyReading"
         },
         {
             id:2,
@@ -31,7 +28,8 @@ class BooksApp extends React.Component {
             ],
             imageLinks: {
                 thumbnail: "http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api"
-            }
+            },
+            shelf: "currentlyReading"
         },
         {
             id:3,
@@ -41,7 +39,8 @@ class BooksApp extends React.Component {
             ],
             imageLinks: {
                 thumbnail: "http://books.google.com/books/content?id=uu1mC6zWNTwC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73pGHfBNSsJG9Y8kRBpmLUft9O4BfItHioHolWNKOdLavw-SLcXADy3CPAfJ0_qMb18RmCa7Ds1cTdpM3dxAGJs8zfCfm8c6ggBIjzKT7XR5FIB53HHOhnsT7a0Cc-PpneWq9zX&source=gbs_api"
-            }
+            },
+            shelf: "wantToRead"
         },
         {
             id:4,
@@ -51,7 +50,8 @@ class BooksApp extends React.Component {
             ],
             imageLinks: {
                 thumbnail: "http://books.google.com/books/content?id=wrOQLV6xB-wC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72G3gA5A-Ka8XjOZGDFLAoUeMQBqZ9y-LCspZ2dzJTugcOcJ4C7FP0tDA8s1h9f480ISXuvYhA_ZpdvRArUL-mZyD4WW7CHyEqHYq9D3kGnrZCNiqxSRhry8TiFDCMWP61ujflB&source=gbs_api"
-            }
+            },
+            shelf: "wantToRead"
         },
         {
             id:5,
@@ -61,7 +61,8 @@ class BooksApp extends React.Component {
             ],
             imageLinks: {
                 thumbnail: "http://books.google.com/books/content?id=pD6arNyKyi8C&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE70Rw0CCwNZh0SsYpQTkMbvz23npqWeUoJvVbi_gXla2m2ie_ReMWPl0xoU8Quy9fk0Zhb3szmwe8cTe4k7DAbfQ45FEzr9T7Lk0XhVpEPBvwUAztOBJ6Y0QPZylo4VbB7K5iRSk&source=gbs_api"
-            }
+            },
+            shelf: "read"
         },
         {
             id:6,
@@ -71,7 +72,8 @@ class BooksApp extends React.Component {
             ],
             imageLinks: {
                 thumbnail: "http://books.google.com/books/content?id=1q_xAwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE712CA0cBYP8VKbEcIVEuFJRdX1k30rjLM29Y-dw_qU1urEZ2cQ42La3Jkw6KmzMmXIoLTr50SWTpw6VOGq1leINsnTdLc_S5a5sn9Hao2t5YT7Ax1RqtQDiPNHIyXP46Rrw3aL8&source=gbs_api"
-            }
+            },
+            shelf: "read"
         },
         {
             id:7,
@@ -81,31 +83,40 @@ class BooksApp extends React.Component {
             ],
             imageLinks: {
                 thumbnail: "http://books.google.com/books/content?id=32haAAAAMAAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72yckZ5f5bDFVIf7BGPbjA0KYYtlQ__nWB-hI_YZmZ-fScYwFy4O_fWOcPwf-pgv3pPQNJP_sT5J_xOUciD8WaKmevh1rUR-1jk7g1aCD_KeJaOpjVu0cm_11BBIUXdxbFkVMdi&source=gbs_api"
-            }
+            },
+            shelf: "read"
         }
       ]
   }
 
-  updateBookStatus = (setBookShelf) => {
-    // remove old state if value exists
-    this.setState((prevState) => ({
-         myreads: {
-            currentlyReading: prevState.myreads.currentlyReading.filter((bookId) => {
-              return bookId !== setBookShelf.id
-            }),
-            wantToRead: prevState.myreads.wantToRead.filter((bookId) => {
-              return bookId !== setBookShelf.id
-            }),
-            read: prevState.myreads.read.filter((bookId) => {
-              return bookId !== setBookShelf.id
-            })
-         }
+  componentDidMount() {
+      BooksAPI.getAll()
+      .then((booksFromApi) => {
+          this.setState((prevState) => ({
+              library: [...booksFromApi, ...prevState.library]
+          }))
+      })
+  }
+
+  updateBookStatus = (setBook) => {
+    console.log('AppJS Update!',setBook);
+    let foundBook = false
+
+    const updatedLibrary = this.state.library.map((book) => {
+      if (book.id === setBook.id) {
+        foundBook = true
+        return {...book, shelf: setBook.shelf}
+      } else {
+        return book
+      }
+    })
+
+    if (!foundBook)
+      updatedLibrary.push(setBook.bookObj)
+
+    this.setState(() => ({
+      library: updatedLibrary
     }));
-    // add new state if value exists
-    this.setState((prevState) => (
-         (setBookShelf.status == 'currentlyReading' || setBookShelf.status == 'wantToRead' || setBookShelf.status == 'read') &&
-          prevState.myreads[setBookShelf.status].push(setBookShelf.id)
-    ));
   }
 
   render() {
@@ -114,7 +125,6 @@ class BooksApp extends React.Component {
         <Routes>
           <Route path='/' element={
             <ListBooks 
-              myreads={this.state.myreads}
               library={this.state.library}
               onBookUpdate={(setBookShelf) => {
                 this.updateBookStatus(setBookShelf)
@@ -123,8 +133,10 @@ class BooksApp extends React.Component {
           } exact />
           <Route path='/search-books' element={
             <SearchBooks 
-              myreads={this.state.myreads}
               library={this.state.library}
+              onBookUpdate={(setBookShelf) => {
+                this.updateBookStatus(setBookShelf)
+              }}
             />
           } />
         </Routes>

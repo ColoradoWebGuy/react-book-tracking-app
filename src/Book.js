@@ -10,15 +10,16 @@ class Book extends Component {
     handleChange(event) {
         let setBookShelf = {
             id: this.props.book.id,
-            status: event.target.value
+            shelf: event.target.value,
+            bookObj: this.props.book
         }
-        if (this.props.status !== event.target.value) {
+        if (this.props.book.shelf !== event.target.value) {
             this.props.onChange(setBookShelf)
         }
     }
 
     render() {
-        const { status, book } = this.props
+        const { book } = this.props
 
         return (
             <div className="book" key={book.id} >
@@ -27,7 +28,7 @@ class Book extends Component {
                         style={{ width: 128, height: 193, backgroundImage:'url("'+ book.imageLinks.thumbnail +'")' }}>
                     </div>
                     <div className="book-shelf-changer">
-                        <select value={status} onChange={this.handleChange}>
+                        <select value={book.shelf} onChange={this.handleChange}>
                             <option value="move" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>
