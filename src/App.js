@@ -21,20 +21,29 @@ class BooksApp extends React.Component {
   }
 
   updateBookStatus = (setBook) => {
-    console.log('AppJS Update!',setBook);
-    let foundBook = false
+    let bookExists = false
 
-    const updatedLibrary = this.state.library.map((book) => {
-      if (book.id === setBook.id) {
-        foundBook = true
-        return {...book, shelf: setBook.shelf}
-      } else {
-        return book
-      }
-    })
+    const updatedLibrary = this.state.library.filter((book) => {
+        // filter out the 'none' books
+        if (book.id === setBook.id && setBook.shelf === 'none') {
+          return false // skip this to have it removed
+        } else {
+          return true
+        }
+    }).map((book) => { 
+        // update book shelf if it exists
+        if (book.id === setBook.id && setBook.shelf !== 'none') {
+          bookExists = true
+          return {...book, shelf: setBook.shelf}
+        } else {
+          return book
+        }
+     })
 
-    if (!foundBook)
-      updatedLibrary.push(setBook.bookObj)
+    if (!bookExists) {
+      const newBook = {...setBook.bookObj, shelf: setBook.shelf}
+      updatedLibrary.push(newBook)
+    }
       
     this.setState(() => ({
       library: updatedLibrary
