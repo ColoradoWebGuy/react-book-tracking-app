@@ -1,29 +1,17 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import Book from './Book'
-class ListBooks extends Component {
+import PropTypes from 'prop-types'
 
-    getBooks = (book_ids) => {
-      let books = []
-      book_ids.forEach(book_id => {
-        const book = this.props.library.filter(obj => {
-          return obj.id === book_id
-        })
-        if (book.length > 0) {
-          books.push(book)
-        }
-      });
-      return books
-    }
+function ListBooks({library, onBookUpdate}) {
 
-    handleBookUpdate = (setBook) => {
-      if (this.props.onBookUpdate) {
-        this.props.onBookUpdate(setBook)
+    const handleBookUpdate = (setBook) => {
+      if (onBookUpdate) {
+        onBookUpdate(setBook)
       }
     }
 
-    render() {
-        return (
+    return (
         <div className="list-books">
           <div className="list-books-title">
             <h1>MyReads</h1>
@@ -34,13 +22,12 @@ class ListBooks extends Component {
                 <h2 className="bookshelf-title">Currently Reading</h2>
                 <div className="bookshelf-books">
                   <ol className="books-grid">
-                      {this.props.library.map(
-                        (book) => {
+                      {library.map((book) => {
                           if (book.shelf === 'currentlyReading') {
                             return (<li key={book.id}>
                               <Book 
                                 book={book} 
-                                onChange={(setBook) => this.handleBookUpdate(setBook)} />
+                                onChange={(setBook) => handleBookUpdate(setBook)} />
                             </li>)
                           } else {
                             return ''
@@ -54,13 +41,12 @@ class ListBooks extends Component {
                 <h2 className="bookshelf-title">Want to Read</h2>
                 <div className="bookshelf-books">
                   <ol className="books-grid">
-                    {this.props.library.map(
-                        (book) => {
+                    {library.map((book) => {
                           if (book.shelf === 'wantToRead') {
                             return (<li key={book.id}>
                               <Book 
                                 book={book} 
-                                onChange={(setBook) => this.handleBookUpdate(setBook)} />
+                                onChange={(setBook) => handleBookUpdate(setBook)} />
                             </li>)
                           } else {
                             return ''
@@ -74,13 +60,13 @@ class ListBooks extends Component {
                 <h2 className="bookshelf-title">Read</h2>
                 <div className="bookshelf-books">
                   <ol className="books-grid">
-                    {this.props.library.map(
+                    {library.map(
                         (book) => {
                           if (book.shelf === 'read') {
                             return (<li key={book.id}>
                               <Book 
                                 book={book} 
-                                onChange={(setBook) => this.handleBookUpdate(setBook)} />
+                                onChange={(setBook) => handleBookUpdate(setBook)} />
                             </li>)
                           } else {
                             return ''
@@ -98,8 +84,12 @@ class ListBooks extends Component {
               className='add-contact'>Add a book</Link>
           </div>
         </div>
-        )
-    }
+    )
+}
+
+ListBooks.propTypes = {
+  library: PropTypes.array.isRequired,
+  onBookUpdate: PropTypes.func.isRequired
 }
 
 export default ListBooks

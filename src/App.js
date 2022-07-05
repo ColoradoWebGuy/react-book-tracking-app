@@ -1,29 +1,27 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import './App.css'
 import ListBooks from './ListBooks'
 import SearchBooks from './SearchBooks'
 import * as BooksAPI from './BooksAPI'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
-class BooksApp extends React.Component {
+function BooksApp() {
 
-  state = {
-    library: []
-  }
+  const [library, setLibrary] = useState([]);
 
-  componentDidMount() {
-      BooksAPI.getAll()
-      .then((booksFromApi) => {
-          this.setState((prevState) => ({
-              library: [...booksFromApi, ...prevState.library]
-          }))
-      })
-  }
+  useEffect(() => {
+    // Runs ONCE after initial rendering
+    async function fetchBooks() {
+      const booksFromApi = await BooksAPI.getAll();
+      setLibrary(booksFromApi);
+    }
+    fetchBooks();
+  }, []);
 
-  updateBookStatus = (setBook) => {
+  let updateBookStatus = (setBook) => {
     let bookExists = false
 
-    const updatedLibrary = this.state.library.filter((book) => {
+    const updatedLibrary = library.filter((book) => {
         // filter out the 'none' books
         if (book.id === setBook.id && setBook.shelf === 'none') {
           return false // skip this to have it removed
@@ -45,37 +43,35 @@ class BooksApp extends React.Component {
       updatedLibrary.push(newBook)
     }
       
-    this.setState(() => ({
-      library: updatedLibrary
-    }));
+    setLibrary(updatedLibrary);
     
     BooksAPI.update(setBook.bookObj, setBook.shelf)
   }
 
-  render() {
-    return (
-      <div className="app">
-        <Routes>
-          <Route path='/' element={
-            <ListBooks 
-              library={this.state.library}
-              onBookUpdate={(setBookShelf) => {
-                this.updateBookStatus(setBookShelf)
-              }}
-            />
-          } exact />
-          <Route path='/search-books' element={
-            <SearchBooks 
-              library={this.state.library}
-              onBookUpdate={(setBookShelf) => {
-                this.updateBookStatus(setBookShelf)
-              }}
-            />
-          } />
-        </Routes>
-      </div>
-    )
-  }
+  
+  return (
+    <div className="app">
+      <Routes>
+        <Route path='/' element={
+          <ListBooks 
+            library={library}
+            onBookUpdate={(setBookShelf) => {
+              updateBookStatus(setBookShelf)
+            }}
+          />
+        } exact />
+        <Route path='/search-books' element={
+          <SearchBooks 
+            library={library}
+            onBookUpdate={(setBookShelf) => {
+              updateBookStatus(setBookShelf)
+            }}
+          />
+        } />
+      </Routes>
+    </div>
+  )
+  
 }
 
 export default () => {

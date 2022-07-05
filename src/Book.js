@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 
 class Book extends Component {
-    
     constructor(props) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
@@ -58,6 +58,11 @@ class Book extends Component {
             </div>
         )
     }
+}
+
+Book.propTypes = {
+  book: PropTypes.object.isRequired,
+  myReads: PropTypes.arrayOf(PropTypes.object)
 }
 
 export default Book;
