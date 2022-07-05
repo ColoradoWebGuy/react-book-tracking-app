@@ -2,11 +2,10 @@
 
 Welcome to the "MyReads" React App! With this application, you will be able to keep track of your book reads. It comes with three different books shelves to manage; they are "Currently Reading", "Want to Read", and "Read".
 
-You will also be able to search for books through an API that is a fixed set of cached search results (maximum of 20 books). When the search is empty, then by default, you will see all of your selected "MyReads" books.
+You will also be able to search for books through an API that is a fixed set of cached search results (maximum of 20 books). When the search is empty - then results will be cleared.
 
 <img src="readme_assets/MyReads.png" alt="My Reads" width="400" />
-<img src="readme_assets/SearchPage.png" alt="My Reads" width="400" />
-<img src="readme_assets/SearchResults.png" alt="My Reads" width="400" />
+<img src="readme_assets/Search.png" alt="My Reads" width="400" />
 
 ## Installation Guide
 
